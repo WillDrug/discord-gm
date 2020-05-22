@@ -1,0 +1,42 @@
+version: '3'
+services:
+  gmbot:
+    build:
+      context: gm-bot
+    image: gmbot:1.0.0
+    container_name: gmbot
+    hostname: gmbot
+    environment:
+      - API_KEY=${API_KEY}
+    networks:
+      - toynet
+  gmcontrol:
+    build:
+      context: gm-control
+    image: gmcontrol:1.0.0
+    container_name: gmcontrol
+    hostname: gmcontrol
+    networks:
+      - toynet
+
+  gmredis:
+    image: 'bitnami/redis:5.0'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    networks:
+      - toynet
+    container_name: gmredis
+    hostname: gmredis
+    volumes:
+      - 'gmredis_data:/bitnami/redis/data'
+
+volumes:
+  gmredis_data:
+    driver: local
+
+networks:
+  toysupport:
+  toynet:
+    external:
+      name: toynet
